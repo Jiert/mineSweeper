@@ -2,9 +2,24 @@ body {
   font-family: "Helvetica Neue"
 }
 
+.board {
+  float: left;
+  border: solid 1px;
+  width: 420px;
+}
+
 .tile {
+  float: left;
   background: #ccc;
   height: 40px;
   width: 40px;
   border: solid 1px #999;
+}
+
+.flagged {
+  background: red;
+}
+
+.exposed {
+  background: #fff;
 }
