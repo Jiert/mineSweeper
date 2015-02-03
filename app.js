@@ -8,23 +8,45 @@
     },
 
     initialize: function(){
+      _(this).bindAll('leftClick', 'rightClick');
       this.listenTo(this.model, 'change', this.render);
     },
 
     onTileClick: function(event){
-      console.log(this.model.get('hasMine'));
       switch (event.which) {
         case 1:
-          console.log('Left Mouse button pressed.');
-          this.model.set({ state: 'exposed'});
+          this.leftClick();
           break;
         case 3:
-          console.log('Right Mouse button pressed.');
-          this.model.set({ state: 'flagged'});
+          this.rightClick();
           break;
         default: return;
       }
+    },
 
+    leftClick: function(){
+      var index = _(this.model.collection.models).indexOf(this.model),
+          count = 0;
+
+      console.log(index);
+
+      if (this.model.get('hasMine')){
+        // End Game
+        this.$el.addClass('mine');
+      }
+
+      this.model.set({ 
+        state: 'exposed'
+      });
+    },
+
+    rightClick: function(){
+      if (this.model.get('state') === 'blank'){
+        this.model.set({ state: 'flagged'});
+      }
+      else if (this.model.get('state') === 'flagged'){
+        this.model.set({ state: 'blank'});
+      }
     },
 
     render: function(){
@@ -81,10 +103,6 @@
     defaults: {
       'state' : 'blank'
     },
-
-    initialize: function(options){
-      this.hasMine = options.hasMine;
-    }
   });
 
   var TilesCollection = Backbone.Collection.extend({

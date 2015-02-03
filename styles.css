@@ -16,10 +16,19 @@ body {
   border: solid 1px #999;
 }
 
+.tile > div {
+  height: 100%;
+}
+
+
 .flagged {
   background: red;
 }
 
 .exposed {
   background: #fff;
+}
+
+.tile.mine .exposed {
+  background-color: orange;
 }
