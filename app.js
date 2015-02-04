@@ -2,7 +2,7 @@
 
   var TileView = Backbone.View.extend({
     className: 'tile',
-    template: _.template("<div class='<%= state %>'><%= hasMine %></div>"),
+    template: _.template("<div class='<%= state %>'><%= neighborMines %></div>"),
     events: {
       'mousedown' : 'onTileClick'
     },
@@ -103,7 +103,8 @@
 
     relations: [[-1, 0], [-1,+1], [0,+1], [+1,+1], [+1,0], [+1,-1], [0,-1], [-1,-1]],
     defaults: {
-      'state' : 'blank'
+      'state'         : 'blank',
+      'neighborMines' : 0
     },
     
     getRelations: function(tile, iteratee){
@@ -120,6 +121,7 @@
     },
 
     onRelationChange: function(){
+      // this needs to be a change to the neighborMines.. I think
       if (!this.get('hasMine')){
         this.set({state: 'exposed'});
       }
@@ -128,12 +130,21 @@
     getRelation: function(relation, index){
       var x = this.location[0] + relation[0],
           y = this.location[1] + relation[1],
-          modelIndex;
+          neighborMines = this.get('neighborMines'),
+          modelIndex,
+          model;
 
       if (x < 0 || x > 9) return;
       if (y < 0 || y > 9) return;
 
       modelIndex = parseInt('' + x + y);
+      model = this.collection.at(modelIndex);
+
+      if (model.get('hasMine')){
+        this.set({
+          neighborMines: ++neighborMines
+        });
+      }
 
       this.relatedModelsCollection.add(this.collection.at(modelIndex));
     }
