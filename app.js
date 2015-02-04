@@ -2,7 +2,7 @@
 
   var TileView = Backbone.View.extend({
     className: 'tile',
-    template: _.template("<div class='<%= state %>'><%= neighborMines %></div>"),
+    template: _.template("<div class='<%= state %>'><span><%= neighborMines %></span></div>"),
     events: {
       'mousedown' : 'onTileClick'
     },
@@ -37,7 +37,11 @@
 
     rightClick: function(){
       if (this.model.get('state') === 'blank'){
-        this.model.set({ state: 'flagged'});
+        this.model.set(
+          { state: 'flagged'},
+          { silent: true }
+        );
+        this.render();
       }
       else if (this.model.get('state') === 'flagged'){
         this.model.set({ state: 'blank'});
@@ -120,9 +124,8 @@
       this.listenTo(this.relatedModelsCollection, 'change', this.onRelationChange);
     },
 
-    onRelationChange: function(){
-      // this needs to be a change to the neighborMines.. I think
-      if (!this.get('hasMine')){
+    onRelationChange: function(model){
+      if (model.get('neighborMines') === 0 && !this.get('hasMine')){
         this.set({state: 'exposed'});
       }
     },
@@ -141,9 +144,10 @@
       model = this.collection.at(modelIndex);
 
       if (model.get('hasMine')){
-        this.set({
-          neighborMines: ++neighborMines
-        });
+        this.set(
+          { neighborMines: ++neighborMines },
+          { silent: true }
+        );
       }
 
       this.relatedModelsCollection.add(this.collection.at(modelIndex));
