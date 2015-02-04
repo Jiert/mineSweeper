@@ -102,7 +102,6 @@
     },
 
     relations: [[-1, 0], [-1,+1], [0,+1], [+1,+1], [+1,0], [+1,-1], [0,-1], [-1,-1]],
-
     defaults: {
       'state' : 'blank'
     },
@@ -115,7 +114,7 @@
         parseInt(divide[1]) || 0
       ];
 
-      _(this.relations).each(this.getRelation);
+      _(this.relations).each(this.getRelation, this);
 
       this.listenTo(this.relatedModelsCollection, 'change', this.onRelationChange);
     },
@@ -134,11 +133,10 @@
       if (x < 0 || x > 9) return;
       if (y < 0 || y > 9) return;
 
-      modelIndex = parseInt('' + relation[0] + relation[1]);
+      modelIndex = parseInt('' + x + y);
 
       this.relatedModelsCollection.add(this.collection.at(modelIndex));
     }
-
   });
 
   var TilesCollection = Backbone.Collection.extend({
