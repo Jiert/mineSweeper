@@ -60,7 +60,7 @@
     className: 'board',
 
     initialize: function(){
-      _(this).bindAll('renderTiles', 'renderTile', 'render', 'buildTiles');
+      _(this).bindAll('renderTiles', 'renderTile', 'render', 'buildTiles', 'calculateBombs');
       this.tiles = new TilesCollection();
 
       this.mines = 10;
@@ -82,7 +82,65 @@
 
     renderTiles: function(){
       this.tiles.reset(this.tiles.shuffle());
+
+      // Create bomb count here I think
+      this.tiles.each(this.calculateBombs);
+
       this.tiles.each(this.renderTile);
+    },
+
+    calculateBombs: function(model, iteratee){
+      // TODO, find better way than splitting with strings
+      var divide = (iteratee / 10).toString().split('.'),
+          row = parseInt(divide[0]),
+          col = parseInt(divide[1]) || 0,
+          
+          tileInfo = [
+            {
+              row : row,
+              col : col
+            }, 
+            {
+              row : row - 1,
+              col : col
+            },
+            {
+              row : row - 1,
+              col : col + 1
+            },
+            {
+              row : row,
+              col : col + 1
+            },
+            {
+              row : row + 1,
+              col : col + 1
+            },
+            {
+              row : row + 1,
+              col : col
+            },
+            {
+              row : row + 1,
+              col : col - 1
+            },
+            {
+              row : row,
+              col : col - 1
+            },
+            {
+              row : row  - 1,
+              col : col - 1
+            }
+          ];
+
+      console.log(tileInfo);
+
+      _(tileInfo).each(function(){
+
+      });
+
+      // _(8).times(function(){});
     },
 
     renderTile: function(tile){
