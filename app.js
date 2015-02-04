@@ -25,11 +25,6 @@
     },
 
     leftClick: function(){
-      var index = _(this.model.collection.models).indexOf(this.model),
-          count = 0;
-
-      console.log(index);
-
       if (this.model.get('hasMine')){
         // End Game
         this.$el.addClass('mine');
@@ -50,7 +45,6 @@
     },
 
     render: function(){
-      console.log('tile render', this.model.get('state'));
       this.$el.html(this.template(this.model.toJSON()));
       return this;
     }
@@ -60,7 +54,7 @@
     className: 'board',
 
     initialize: function(){
-      _(this).bindAll('renderTiles', 'renderTile', 'render', 'buildTiles', 'calculateBombs');
+      _(this).bindAll('renderTiles', 'renderTile', 'render', 'buildTiles');
       this.tiles = new TilesCollection();
 
       this.mines = 10;
@@ -82,68 +76,12 @@
 
     renderTiles: function(){
       this.tiles.reset(this.tiles.shuffle());
-
-      // Create bomb count here I think
-      this.tiles.each(this.calculateBombs);
-
       this.tiles.each(this.renderTile);
     },
 
-    calculateBombs: function(model, iteratee){
-      // TODO, find better way than splitting with strings
-      var divide = (iteratee / 10).toString().split('.'),
-          row = parseInt(divide[0]),
-          col = parseInt(divide[1]) || 0,
-          
-          tileInfo = [
-            {
-              row : row,
-              col : col
-            }, 
-            {
-              row : row - 1,
-              col : col
-            },
-            {
-              row : row - 1,
-              col : col + 1
-            },
-            {
-              row : row,
-              col : col + 1
-            },
-            {
-              row : row + 1,
-              col : col + 1
-            },
-            {
-              row : row + 1,
-              col : col
-            },
-            {
-              row : row + 1,
-              col : col - 1
-            },
-            {
-              row : row,
-              col : col - 1
-            },
-            {
-              row : row  - 1,
-              col : col - 1
-            }
-          ];
+    renderTile: function(tile, iteratee){
+      tile.getRelations(tile, iteratee);
 
-      console.log(tileInfo);
-
-      _(tileInfo).each(function(){
-
-      });
-
-      // _(8).times(function(){});
-    },
-
-    renderTile: function(tile){
       var tileView = new TileView({
         model: tile
       });
@@ -158,9 +96,49 @@
   });
 
   var TileModel = Backbone.Model.extend({
+    initialize: function(){
+      _(this).bindAll('getRelations','getRelation');
+      this.relatedModelsCollection = new Backbone.Collection();
+    },
+
+    relations: [[-1, 0], [-1,+1], [0,+1], [+1,+1], [+1,0], [+1,-1], [0,-1], [-1,-1]],
+
     defaults: {
       'state' : 'blank'
     },
+    
+    getRelations: function(tile, iteratee){
+      var divide = (iteratee / 10).toString().split('.');
+
+      this.location = [
+        parseInt(divide[0]),
+        parseInt(divide[1]) || 0
+      ];
+
+      _(this.relations).each(this.getRelation);
+
+      this.listenTo(this.relatedModelsCollection, 'change', this.onRelationChange);
+    },
+
+    onRelationChange: function(){
+      if (!this.get('hasMine')){
+        this.set({state: 'exposed'});
+      }
+    },
+
+    getRelation: function(relation, index){
+      var x = this.location[0] + relation[0],
+          y = this.location[1] + relation[1],
+          modelIndex;
+
+      if (x < 0 || x > 9) return;
+      if (y < 0 || y > 9) return;
+
+      modelIndex = parseInt('' + relation[0] + relation[1]);
+
+      this.relatedModelsCollection.add(this.collection.at(modelIndex));
+    }
+
   });
 
   var TilesCollection = Backbone.Collection.extend({
