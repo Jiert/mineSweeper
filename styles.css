@@ -45,9 +45,12 @@ body {
   background-color: orange;
 }
 
-.red { color: red; }
-.blue { color: blue; }
-.navy { color: navy; }
-.white { color: #fff; }
-.green { color: green; }
+.white  { color: #fff; }
+.blue   { color: blue; }
+.green  { color: green; }
+.red    { color: red; }
+.navy   { color: navy; }
 .maroon { color: maroon; }
+.aqua   { color: darkcyan; }
+.black  { color: black; }
+.gray   { color: lightgray;}
