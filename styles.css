@@ -18,6 +18,11 @@ body {
 
 .tile > div {
   height: 100%;
+  text-align: center;
+}
+
+.tile > div > span {
+  line-height: 2.5;  
 }
 
 .flagged {
