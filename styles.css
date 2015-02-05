@@ -5,14 +5,17 @@ body {
 .board {
   float: left;
   border: solid 1px;
-  width: 420px;
+  width: 370px;
 }
 
 .tile {
+  box-shadow: inset 3px 3px 0px rgba(255,255,255,.8), inset -3px -3px 0px rgba(0,0,0,.3);
+  font-size: 20px;
+  font-weight: bold;
   float: left;
   background: #ccc;
-  height: 40px;
-  width: 40px;
+  height: 35px;
+  width: 35px;
   border: solid 1px #999;
 }
 
@@ -22,7 +25,7 @@ body {
 }
 
 .tile > div > span {
-  line-height: 2.5;  
+  line-height: 1.7;  
 }
 
 .flagged {
@@ -35,9 +38,16 @@ body {
 }
 
 .exposed {
-  background: #fff;
+  background: #ececec;
 }
 
 .tile.mine .exposed {
   background-color: orange;
 }
+
+.red { color: red; }
+.blue { color: blue; }
+.navy { color: navy; }
+.white { color: #fff; }
+.green { color: green; }
+.maroon { color: maroon; }

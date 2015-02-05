@@ -3,6 +3,7 @@
   var TileView = Backbone.View.extend({
     className: 'tile',
     template: _.template("<div class='<%= state %>'><span><%= neighborMines %></span></div>"),
+    colors: ['white', 'blue', 'green', 'red', 'navy', 'maroon', 'aqua', 'black', 'lightgray'],
     events: {
       'mousedown' : 'onTileClick'
     },
@@ -49,7 +50,19 @@
     },
 
     render: function(){
-      this.$el.html(this.template(this.model.toJSON()));
+      var neighborMines = this.model.get('neighborMines') === 0 ? '' : this.model.get('neighborMines');
+
+      var data = {
+        state: this.model.get('state'),
+        neighborMines: this.model.get('state') === 'exposed' ? neighborMines : '' 
+      };
+
+      this.$el.html(this.template(data));
+
+      if (this.model.get('state') === 'exposed'){
+        this.$('span').addClass(this.colors[neighborMines]);
+      }
+
       return this;
     }
   });
@@ -124,12 +137,6 @@
       this.listenTo(this.relatedModelsCollection, 'change', this.onRelationChange);
     },
 
-    onRelationChange: function(model){
-      if (model.get('neighborMines') === 0 && !this.get('hasMine')){
-        this.set({state: 'exposed'});
-      }
-    },
-
     getRelation: function(relation, index){
       var x = this.location[0] + relation[0],
           y = this.location[1] + relation[1],
@@ -151,6 +158,12 @@
       }
 
       this.relatedModelsCollection.add(this.collection.at(modelIndex));
+    },
+
+    onRelationChange: function(model){
+      if (model.get('neighborMines') === 0 && !this.get('hasMine')){
+        this.set({state: 'exposed'});
+      }
     }
   });
 
