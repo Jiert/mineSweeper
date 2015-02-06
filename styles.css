@@ -29,7 +29,10 @@ body {
 }
 
 .flagged {
-  background: red;
+  background-repeat: no-repeat;
+  background-size: 26px;
+  background-image: url('flag.png');
+  background-position: 3px 4px;
 }
 
 .blank span,
@@ -42,7 +45,11 @@ body {
 }
 
 .tile.mine .exposed {
-  background-color: orange;
+  background-repeat: no-repeat;
+  background-size: 28px;
+  background-color: red;
+  background-image: url('mine.png');
+  background-position: 3px 4px;
 }
 
 .white  { color: #fff; }
