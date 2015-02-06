@@ -28,7 +28,8 @@
     leftClick: function(){
       if (this.model.get('hasMine')){
         // End Game
-        this.$el.addClass('mine');
+        this.model.collection.exposeAllMines();
+        this.$el.addClass('mine');  
       }
 
       this.model.set({ 
@@ -169,6 +170,12 @@
 
   var TilesCollection = Backbone.Collection.extend({
     model: TileModel,
+    exposeAllMines: function(){
+      // debugger;
+      this.each(function(model){
+        if (model.get('hasMine')){ model.set({ state: 'exposed' }); }
+      });
+    }
   });
 
   window.game = new Game();

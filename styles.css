@@ -52,6 +52,10 @@ body {
   background-position: 3px 4px;
 }
 
+.tile.mine .exposed > span { 
+  display: none;
+}
+
 .white  { color: #fff; }
 .blue   { color: blue; }
 .green  { color: green; }
