@@ -162,7 +162,7 @@
         -- this.count;
       }
     },
-    //
+    
     render: function(tile){
       this.getCount(tile);
       this.$el.html(this.count);
