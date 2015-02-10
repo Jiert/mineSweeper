@@ -43,6 +43,7 @@
           { state: 'flagged'},
           { silent: true }
         );
+        this.model.collection.trigger('tile:flagged', this.model);
         this.render();
       }
       else if (this.model.get('state') === 'flagged'){
@@ -71,6 +72,13 @@
   var Game = Backbone.View.extend({
     className: 'board',
 
+    template: _.template("\
+      <div class='counter'></div>\
+      <button class='restart'>:-)</button>\
+      <div class='timer'></div>\
+      <div class='tiles'></div>"
+    ),
+
     initialize: function(){
       _(this).bindAll('renderTiles', 'renderTile', 'render', 'buildTiles');
       this.tiles = new TilesCollection();
@@ -78,8 +86,6 @@
       this.mines = 10;
 
       _(100).times(this.buildTiles);
-
-      this.renderTiles();
     },
 
     buildTiles: function(i){
@@ -103,12 +109,72 @@
       var tileView = new TileView({
         model: tile
       });
-      this.$el.append(tileView.render().el);
+      this.$tiles.append(tileView.render().el);
+    },
+
+    renderCounter: function(){
+      this.counterView = new CounterView({
+        tiles: this.tiles
+      });
+
+      this.$counter.html(this.counterView.render().el);
+    },
+
+    renderTimer: function(){
+      this.timerView = new TimerView({
+        tiles: this.tiles
+      });
+
+      this.$timer.html(this.timerView.render().el);
     },
 
     render: function(){
-      // renderForm
-      // renderTiles
+      this.$el.html(this.template());
+
+      this.$tiles   = this.$('.tiles');
+      this.$timer   = this.$('.timer');
+      this.$counter = this.$('.counter');
+
+      this.renderTiles();
+
+      this.renderCounter();
+      this.renderTimer();
+
+      return this;
+    }
+  });
+
+  var CounterView = Backbone.View.extend({
+    initialize: function(options){
+      _(this).bindAll('render', 'getCount');
+
+      this.tiles = options.tiles
+
+      this.listenTo(this.tiles, 'tile:flagged', this.render)
+      this.totalMines = this.tiles.where({'hasMine':true}).length;
+      this.count = this.totalMines;
+    },
+
+    getCount: function(tile){
+      // this seems like an extra check, we already 
+      // know the tile is flagged
+      if (tile && tile.get('state') === 'flagged'){
+        -- this.count;
+      }
+    },
+
+    render: function(tile){
+      this.getCount(tile);
+      this.$el.html(this.count);
+      return this;
+    }
+  }); 
+
+  var TimerView = Backbone.View.extend({
+    initialize: function(options){},
+
+    render: function(){
+      this.$el.html('timer')
       return this;
     }
   });
