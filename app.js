@@ -11,6 +11,9 @@
     initialize: function(){
       _(this).bindAll('leftClick', 'rightClick');
       this.listenTo(this.model, 'change', this.render);
+
+      // Going to need some logic here that listens for exposeAllMines
+      // and then we'll need to apply this.$el.addClass('mine'); 
     },
 
     onTileClick: function(event){
@@ -26,10 +29,13 @@
     },
 
     leftClick: function(){
+      this.model.collection.trigger('start');
+      if (this.model.get('state') === 'flagged') return;
+
       if (this.model.get('hasMine')){
         // End Game
         this.model.collection.exposeAllMines();
-        this.$el.addClass('mine');  
+        this.$el.addClass('mine'); 
       }
 
       this.model.set({ 
@@ -38,6 +44,7 @@
     },
 
     rightClick: function(){
+      this.model.collection.trigger('start');
       if (this.model.get('state') === 'blank'){
         this.model.set(
           { state: 'flagged'},
@@ -48,6 +55,7 @@
       }
       else if (this.model.get('state') === 'flagged'){
         this.model.set({ state: 'blank'});
+        this.model.collection.trigger('tile:flagged', this.model);
       }
     },
 
@@ -125,7 +133,7 @@
         tiles: this.tiles
       });
 
-      this.$timer.html(this.timerView.render().el);
+      this.$timer.html(this.timerView.el);
     },
 
     render: function(){
@@ -150,16 +158,19 @@
 
       this.tiles = options.tiles
 
-      this.listenTo(this.tiles, 'tile:flagged', this.render)
+      this.listenTo(this.tiles, {
+        'tile:flagged': this.render
+      })
       this.totalMines = this.tiles.where({'hasMine':true}).length;
       this.count = this.totalMines;
     },
 
     getCount: function(tile){
-      // this seems like an extra check, we already 
-      // know the tile is flagged
       if (tile && tile.get('state') === 'flagged'){
         -- this.count;
+      }
+      else if (tile && tile.get('state') === 'blank'){
+        ++ this.count;
       }
     },
     
@@ -171,10 +182,31 @@
   }); 
 
   var TimerView = Backbone.View.extend({
-    initialize: function(options){},
+    initialize: function(options){
+      _(this).bindAll('render');
+
+      this.counter = 0;
+
+      this.tiles  = options.tiles;
+      this.listenTo( this.tiles, {
+        'start': _.once(this.onStart),
+        'expose:allMines' : this.onStopTimer
+      });
+
+      this.render();
+    },
+
+    onStopTimer: function(){
+      clearInterval(this.interval);
+    },
+
+    onStart: function(){
+      this.interval = setInterval(this.render, 1000)
+    },
 
     render: function(){
-      this.$el.html('timer')
+      this.$el.html(this.counter.toString());
+      this.counter ++;
       return this;
     }
   });
@@ -241,6 +273,7 @@
       this.each(function(model){
         if (model.get('hasMine')){ model.set({ state: 'exposed' }); }
       });
+      this.trigger('expose:allMines');
     }
   });
 
