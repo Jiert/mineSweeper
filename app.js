@@ -94,28 +94,23 @@
     initialize: function(){
       _(this).bindAll('renderTiles', 'renderTile', 'render', 'buildTiles');
       this.tiles = new TilesCollection();
-
-      this.mines = 10;
-      this.subViews = [];
-
       this.startGame()
     },
 
     startGame: function(){
       this.cleanup();
-
       _(100).times(this.buildTiles);
-      
       this.render();
     },
 
     cleanup: function(){
-      if (this.subViews.length){
+      if (this.subViews && this.subViews.length){
         _(this.subViews).each(function(subView){
           subView.remove();
         });
       }
       this.subViews = [];
+      this.mines = 10;
       this.tiles.reset();
       this.$el.html('');
     },
