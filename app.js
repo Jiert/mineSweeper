@@ -78,6 +78,10 @@
   });
 
   var Game = Backbone.View.extend({
+    events: {
+      'click .restart' : 'startGame'
+    },
+
     className: 'board',
 
     template: _.template("\
@@ -92,8 +96,28 @@
       this.tiles = new TilesCollection();
 
       this.mines = 10;
+      this.subViews = [];
+
+      this.startGame()
+    },
+
+    startGame: function(){
+      this.cleanup();
 
       _(100).times(this.buildTiles);
+      
+      this.render();
+    },
+
+    cleanup: function(){
+      if (this.subViews.length){
+        _(this.subViews).each(function(subView){
+          subView.remove();
+        });
+      }
+      this.subViews = [];
+      this.tiles.reset();
+      this.$el.html('');
     },
 
     buildTiles: function(i){
@@ -117,6 +141,8 @@
       var tileView = new TileView({
         model: tile
       });
+
+      this.subViews.push(tileView);
       this.$tiles.append(tileView.render().el);
     },
 
@@ -125,6 +151,7 @@
         tiles: this.tiles
       });
 
+      this.subViews.push(this.counterView);
       this.$counter.html(this.counterView.render().el);
     },
 
@@ -133,6 +160,7 @@
         tiles: this.tiles
       });
 
+      this.subViews.push(this.timerView);
       this.$timer.html(this.timerView.el);
     },
 
@@ -144,7 +172,6 @@
       this.$counter = this.$('.counter');
 
       this.renderTiles();
-
       this.renderCounter();
       this.renderTimer();
 
@@ -278,6 +305,6 @@
   });
 
   window.game = new Game();
-  $('#game').html(window.game.render().el);
+  $('#game').html(window.game.el);
 
 })();
