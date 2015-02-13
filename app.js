@@ -28,11 +28,9 @@
     leftClick: function(){
       this.model.collection.trigger('start');
       if (this.model.get('state') === 'flagged') return;
-
       if (this.model.get('hasMine')){
         this.model.collection.exposeAllMines();
       }
-
       this.model.set({ 
         state: 'exposed'
       });
@@ -41,16 +39,11 @@
     rightClick: function(){
       this.model.collection.trigger('start');
       if (this.model.get('state') === 'blank'){
-        this.model.set(
-          { state: 'flagged'},
-          { silent: true }
-        );
-        this.model.collection.trigger('tile:flagged', this.model);
+        this.model.set({ state: 'flagged' });
         this.render();
       }
       else if (this.model.get('state') === 'flagged'){
         this.model.set({ state: 'blank'});
-        this.model.collection.trigger('tile:flagged', this.model);
       }
     },
 
@@ -172,18 +165,20 @@
 
   var CounterView = Backbone.View.extend({
     initialize: function(options){
-      _(this).bindAll('render', 'getCount');
+      _(this).bindAll('render', 'updateCount', 'checkWin');
 
       this.tiles = options.tiles
+      this.mines = this.tiles.where({ hasMine: true });
+
 
       this.listenTo(this.tiles, {
-        'tile:flagged': this.render
+        'change': this.render
       })
       this.totalMines = this.tiles.where({'hasMine':true}).length;
       this.count = this.totalMines;
     },
 
-    getCount: function(tile){
+    updateCount: function(tile){
       if (tile && tile.get('state') === 'flagged'){
         -- this.count;
       }
@@ -192,9 +187,26 @@
       }
     },
     
+    checkWin: function(){
+      // Win means all tiles with mines are flagged and
+      // all other tiles w/o mines are exposed
+      this.mines = this.tiles.where({ hasMine: true });
+
+      var numExposed = this.tiles.where({ state: 'exposed' }).length;
+
+      var allMinesFlagged;
+
+      if (this.totalMines === 0 && this.count == 0){
+
+      }      
+    },
+
     render: function(tile){
-      this.getCount(tile);
+      this.updateCount(tile);
+      this.checkWin();
+      
       this.$el.html(this.count);
+
       return this;
     }
   }); 
