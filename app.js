@@ -11,9 +11,6 @@
     initialize: function(){
       _(this).bindAll('leftClick', 'rightClick');
       this.listenTo(this.model, 'change', this.render);
-
-      // Going to need some logic here that listens for exposeAllMines
-      // and then we'll need to apply this.$el.addClass('mine'); 
     },
 
     onTileClick: function(event){
@@ -33,9 +30,7 @@
       if (this.model.get('state') === 'flagged') return;
 
       if (this.model.get('hasMine')){
-        // End Game
         this.model.collection.exposeAllMines();
-        this.$el.addClass('mine'); 
       }
 
       this.model.set({ 
@@ -61,7 +56,6 @@
 
     render: function(){
       var neighborMines = this.model.get('neighborMines') === 0 ? '' : this.model.get('neighborMines');
-
       var data = {
         state: this.model.get('state'),
         neighborMines: this.model.get('state') === 'exposed' ? neighborMines : '' 
@@ -71,8 +65,10 @@
 
       if (this.model.get('state') === 'exposed'){
         this.$('span').addClass(this.colors[neighborMines]);
+        if (this.model.get('hasMine')){
+          this.$el.addClass('mine'); 
+        }
       }
-
       return this;
     }
   });
@@ -282,6 +278,10 @@
     },
 
     onRelationChange: function(model){
+      if (model.get('hasMine')) return;
+      
+      // ask if the changed related model has any neighbor mines
+      // if they don't, it's safe to expose this tile.
       if (model.get('neighborMines') === 0 && !this.get('hasMine')){
         this.set({state: 'exposed'});
       }
@@ -291,9 +291,10 @@
   var TilesCollection = Backbone.Collection.extend({
     model: TileModel,
     exposeAllMines: function(){
-      // debugger;
       this.each(function(model){
-        if (model.get('hasMine')){ model.set({ state: 'exposed' }); }
+        if (model.get('hasMine')){ 
+          model.set({ state: 'exposed' }); 
+        }
       });
       this.trigger('expose:allMines');
     }
