@@ -169,7 +169,7 @@
 
       this.tiles = options.tiles
       this.mines = this.tiles.where({ hasMine: true });
-
+      this.blanks = this.tiles.where({ hasMine: false });
 
       this.listenTo(this.tiles, {
         'change': this.render
@@ -187,18 +187,26 @@
       }
     },
     
+    every: function(modelsArray, key, value){
+      for (var i = 0; i < modelsArray.length; i++){
+        if (modelsArray[i].get(key) !== value) return false;
+      }
+      return true;
+    },
+
     checkWin: function(){
       // Win means all tiles with mines are flagged and
       // all other tiles w/o mines are exposed
-      this.mines = this.tiles.where({ hasMine: true });
+      // var allMinesFlagged = this.mines.every({ attributes: 'flagged' })
+      var allMinesFlagged = this.every(this.mines, 'state', 'flagged'),
+          allBlanksExposed = this.every(this.blanks, 'state', 'exposed');
 
-      var numExposed = this.tiles.where({ state: 'exposed' }).length;
+      if (allMinesFlagged && allBlanksExposed){
 
-      var allMinesFlagged;
-
-      if (this.totalMines === 0 && this.count == 0){
-
-      }      
+        // should name this trigger something different
+        this.tiles.trigger('expose:allMines');
+        alert('You fuckin win!')
+      }
     },
 
     render: function(tile){
