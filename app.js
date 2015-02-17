@@ -68,14 +68,14 @@
 
   var Game = Backbone.View.extend({
     events: {
-      'click .restart' : 'startGame'
+      'click .restart button' : 'startGame'
     },
 
     className: 'board',
 
     template: _.template("\
       <div class='counter'></div>\
-      <button class='restart'>:-)</button>\
+      <div class='restart'><button>:-)</button></div>\
       <div class='timer'></div>\
       <div class='tiles'></div>"
     ),

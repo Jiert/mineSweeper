@@ -8,6 +8,29 @@ body {
   width: 370px;
 }
 
+.counter, .restart, .timer {
+  float: left;
+}
+
+.counter, .timer {
+  text-align: center;
+  width: 20%;
+  height: 40px;
+  font-size: 30px;
+  color: red;
+  box-shadow: inset 0 0 1px #000;
+}
+
+.restart {
+  width: 60%;
+}
+
+.restart button {
+  margin: 10px 97px;
+}
+
+.tiles { clear: both; }
+
 .tile {
   font-size: 20px;
   font-weight: bold;
