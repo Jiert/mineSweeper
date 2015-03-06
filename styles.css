@@ -14,15 +14,16 @@ body {
 
 .counter, .timer {
   text-align: center;
+  padding: 7px 0;
   width: 20%;
-  height: 40px;
   font-size: 30px;
   color: red;
-  box-shadow: inset 0 0 1px #000;
 }
 
 .restart {
-  width: 60%;
+  border-right: solid 1px;
+  border-left: solid 1px;
+  width: 59%;
 }
 
 .restart button {
