@@ -1,5 +1,29 @@
 (function(){
 
+  // TODO: create levels
+  // Beginner: 9x9, 10 mines
+  // Intermediate: ? , 40 mines
+  // Expert: 16x30, 99
+
+  var config = {
+    easy: {
+      width: 9,
+      height: 9,
+      mines: 10
+    },
+    intermediate: {
+      width: 16,
+      height: 16,
+      mines: 40 
+    },
+    expert: {
+      width: 30,
+      height: 16,
+      mines: 99
+    },
+    custom: {}
+  };
+
   var TileView = Backbone.View.extend({
     className: 'tile',
     template: _.template("<div class='<%= state %>'><span><%= neighborMines %></span></div>"),
@@ -88,7 +112,11 @@
 
     startGame: function(){
       this.cleanup();
-      _(100).times(this.buildTiles);
+      // _(100).times(this.buildTiles);
+      
+      var squares = config.easy.height * config.easy.width;
+
+      _(squares).times(this.buildTiles);
       this.render();
     },
 
@@ -99,7 +127,10 @@
         });
       }
       this.subViews = [];
-      this.mines = 10;
+      
+      // this.mines = 10;
+      this.mines = config.easy.mines;
+
       this.tiles.reset();
       this.$el.html('');
     },
@@ -262,12 +293,17 @@
     },
     
     getRelations: function(tile, iteratee){
-      var divide = (iteratee / 10).toString().split('.');
-
+      
+      // var divide = (iteratee / 10).toString().split('.');
+      var divide = (iteratee / config.easy.width).toString().split('.');
+      
       this.location = [
         parseInt(divide[0]),
-        parseInt(divide[1]) || 0
+        parseInt(divide[1] && divide[1].charAt(0)) || 0
       ];
+
+      console.log(this.location, tile)
+      // debugger;  
 
       _(this.relations).each(this.getRelation, this);
 
@@ -281,13 +317,15 @@
           modelIndex,
           model;
 
+      // Numbers, magic numbers!
+
       if (x < 0 || x > 9) return;
       if (y < 0 || y > 9) return;
 
       modelIndex = parseInt('' + x + y);
       model = this.collection.at(modelIndex);
 
-      if (model.get('hasMine')){
+      if (model && model.get('hasMine')){
         this.set(
           { neighborMines: ++neighborMines },
           { silent: true }
