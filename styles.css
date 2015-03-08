@@ -5,7 +5,8 @@ body {
 .board {
   float: left;
   border: solid 1px;
-  width: 370px;
+  /*width: 370px;*/
+  width: 333px;  /* Testing 9x9 board */
 }
 
 .counter, .restart, .timer {

@@ -302,7 +302,7 @@
         parseInt(divide[1] && divide[1].charAt(0)) || 0
       ];
 
-      console.log(this.location, tile)
+      // console.log(this.location, tile)
       // debugger;  
 
       _(this.relations).each(this.getRelation, this);
@@ -315,15 +315,37 @@
           y = this.location[1] + relation[1],
           neighborMines = this.get('neighborMines'),
           modelIndex,
+
+          // TODO: make config[x].width changeable
+          widthBoundary = config.easy.width - 1,
+          heightBoundary = config.easy.height -1,
+
           model;
 
       // Numbers, magic numbers!
 
-      if (x < 0 || x > 9) return;
-      if (y < 0 || y > 9) return;
+      // debugger;
 
+
+
+      // if (x < 0 || x > 9) return;
+      // iterateef (y < 0 || y > 9) return;
+
+      // console.log(x,y)
+
+      if (x < 0 || x > widthBoundary) return;
+      if (y < 0 || y > heightBoundary) return;
+
+      console.log(widthBoundary, heightBoundary)
+
+      // I suspedt issues are with this
       modelIndex = parseInt('' + x + y);
+
+      console.log(modelIndex)
+
       model = this.collection.at(modelIndex);
+
+      // debugger;
 
       if (model && model.get('hasMine')){
         this.set(
