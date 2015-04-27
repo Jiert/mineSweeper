@@ -1,0 +1,106 @@
+body {
+  font-family: "Helvetica Neue"
+}
+
+.board {
+  float: left;
+  border: solid 1px;
+  width: 370px;
+}
+
+.counter, .restart, .timer {
+  float: left;
+}
+
+.counter, .timer {
+  text-align: center;
+  padding: 7px 0;
+  width: 20%;
+  font-size: 30px;
+  color: red;
+}
+
+.restart {
+  border-right: solid 1px;
+  border-left: solid 1px;
+  width: 59%;
+}
+
+.restart button {
+  margin: 10px 97px;
+  background: yellow;
+  border: solid 1px;
+  transform: rotate(90deg);
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+}
+
+.tiles { clear: both; }
+
+.tile {
+  font-size: 20px;
+  font-weight: bold;
+  float: left;
+  background: #ccc;
+  height: 35px;
+  width: 35px;
+  border: solid 1px #999;
+}
+
+.tile > div {
+  border-left: solid 2px #fff;
+  border-top: solid 2px #fff;
+  border-right: solid 2px #999;
+  border-bottom: solid 2px #999;
+  height: 31px;
+  text-align: center;
+}
+
+.tile > div.exposed {
+  border: none;
+  height: 100%;
+}
+
+.tile > div > span {
+  line-height: 1.7;  
+}
+
+.flagged {
+  background-repeat: no-repeat;
+  background-size: 26px;
+  background-image: url('flag.png');
+  background-position: 3px 4px;
+}
+
+.blank span,
+.flagged span {
+  display: none;
+}
+
+.exposed {
+  border: none;
+  background: #e0e0e0;
+}
+
+.tile.mine .exposed {
+  background-repeat: no-repeat;
+  background-size: 28px;
+  background-color: red;
+  background-image: url('mine.png');
+  background-position: 3px 4px;
+}
+
+.tile.mine .exposed > span { 
+  display: none;
+}
+
+.white  { color: #fff; }
+.blue   { color: blue; }
+.green  { color: green; }
+.red    { color: red; }
+.navy   { color: navy; }
+.maroon { color: maroon; }
+.aqua   { color: darkcyan; }
+.black  { color: black; }
+.gray   { color: lightgray;}
