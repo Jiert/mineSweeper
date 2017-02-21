@@ -205,7 +205,7 @@
 
         // should name this trigger something different
         this.tiles.trigger('expose:allMines');
-        alert('You fuckin win!')
+        alert('You win!')
       }
     },
 
