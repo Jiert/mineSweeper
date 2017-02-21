@@ -2,7 +2,7 @@
 
 Welcome to my version of Minesweeper.
 
-I was once asked in an interview how I would go about building minesweeper. Since it was one my my favorite time wasters during college, I thought I'd take a stab at actually building it, so this is the result.
+I was once asked in an interview how I would go about building minesweeper. Since it was one of my favorite time wasters during college, I thought I'd take a stab at actually building it. This is the result.
 
 ### Built with Backbone
 
